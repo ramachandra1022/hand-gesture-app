@@ -6,7 +6,7 @@ streaming = True  # flag to control video streaming
 
 def generate_frames():
     global gesture, streaming
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
     while streaming:
         success, frame = cap.read()
