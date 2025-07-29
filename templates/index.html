@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gesture Recognition App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #2d3e50;
+            color: white;
+            padding: 20px 0;
+            font-size: 1.8em;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #video-stream {
+            border: 5px solid #444;
+            border-radius: 10px;
+            width: 640px;
+            height: 480px;
+            display: none;
+        }
+
+        #gesture, #generated-text {
+            margin-top: 20px;
+            font-size: 1.3em;
+            color: #333;
+        }
+
+        button {
+            margin: 15px 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #start-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #stop-btn {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Real-Time Hand Gesture Recognition
+    </header>
+    <main>
+        <img id="video-stream" src="" alt="Video Stream">
+        <div>
+            <button id="start-btn">Start Camera</button>
+            <button id="stop-btn">Stop Camera</button>
+        </div>
+        <div id="gesture">Gesture: —</div>
+        <div id="generated-text">Generated Text: —</div>
+    </main>
+
+    <script>
+        const videoStream = document.getElementById('video-stream');
+        const gestureDisplay = document.getElementById('gesture');
+        const textDisplay = document.getElementById('generated-text');
+
+        let gestureInterval = null;
+
+        function startCamera() {
+            videoStream.src = "/video";
+            videoStream.style.display = 'inline';
+
+            gestureInterval = setInterval(() => {
+                fetch('/gesture')
+                    .then(response => response.json())
+                    .then(data => {
+                        const gesture = data.gesture;
+                        gestureDisplay.textContent = "Gesture: " + gesture;
+                        textDisplay.textContent = "Generated Text: " + mapGestureToText(gesture);
+                    });
+            }, 1000);
+        }
+
+        function stopCamera() {
+            videoStream.src = "";
+            videoStream.style.display = 'none';
+            gestureDisplay.textContent = "Gesture: —";
+            textDisplay.textContent = "Generated Text: —";
+            clearInterval(gestureInterval);
+        }
+
+        function mapGestureToText(gesture) {
+            const match = gesture.match(/\d+/);
+            const count = match ? parseInt(match[0]) : 0;
+
+            const texts = [
+                "No fingers shown",
+                "You showed one finger",
+                "You showed two fingers",
+                "You showed three fingers",
+                "You showed four fingers",
+                "You showed all five fingers"
+            ];
+            return texts[count] || "Unrecognized gesture";
+        }
+
+        document.getElementById('start-btn').onclick = startCamera;
+        document.getElementById('stop-btn').onclick = stopCamera;
+    </script>
+</body>
+</html>
