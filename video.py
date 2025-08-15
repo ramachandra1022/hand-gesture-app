@@ -4,6 +4,7 @@ from gesture_detector import detect_gesture
 gesture = ""
 streaming = True  # flag to control video streaming
 
+
 def generate_frames():
     global gesture, streaming
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -27,14 +28,16 @@ def generate_frames():
 
     cap.release()
 
+
 def get_current_gesture():
     return gesture
+
 
 def stop_streaming():
     global streaming
     streaming = False
 
+
 def start_streaming():
     global streaming
     streaming = True
-
