@@ -37,3 +37,4 @@ def stop_streaming():
 def start_streaming():
     global streaming
     streaming = True
+
